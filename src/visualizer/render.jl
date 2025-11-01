@@ -1,5 +1,5 @@
 function visualize!(trajectories::Trajectories)
-    max_time = length(trajectories)
+    max_time = length(trajectories.history)
     num_particles = length(trajectories.history[1])
 
     positions = [[Point2f(particle.position)] for particle in trajectories.history[1]]
@@ -10,7 +10,7 @@ function visualize!(trajectories::Trajectories)
     end
 
     window = Figure(size = (800, 600))
-    scene_axis = Axis(window[2, 1])
+    scene_axis = Axis(window[2, 1], aspect = trajectories.box[1] / trajectories.box[2])
     hidedecorations!(scene_axis)
     limits!(scene_axis, 0, trajectories.box[1], 0, trajectories.box[2])
 
@@ -25,7 +25,7 @@ function visualize!(trajectories::Trajectories)
         speed[] = parse(Int64, chop(s, head = 1, tail = 0))
     end
 
-    on(fig.scene.events.tick) do tick
+    on(window.scene.events.tick) do tick
         play_button.active[] || return
         if time_slider.value[] + speed[] < max_time
             time_slider.value[] += speed[]
@@ -40,7 +40,7 @@ function visualize!(trajectories::Trajectories)
         object = lift(time_slider.value) do t
             Circle(positions[p][t], 0.5f0)
         end
-        poly!(scene_axis, object, color = :blue)
+        poly!(scene_axis, object, color = (:blue, 0.75), strokecolor = :black)
     end
 
     wait(display(window))
