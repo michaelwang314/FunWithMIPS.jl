@@ -10,7 +10,7 @@ struct BrownianDynamics <: Integrator
 end
 
 function update_particles!(integrator::BrownianDynamics)
-    @inbounds Threads.@threads for particle in integrator.particles
+    Threads.@threads for particle in integrator.particles
         fa_x, fa_y = get_and_update_active_force(particle.propulsion, integrator.dt)
 
         dt_scaled = integrator.dt / particle.γ_trans

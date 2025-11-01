@@ -24,7 +24,7 @@ function run!()
 
     initial_positions, box = initialize_triangular_lattice(1.5, (20, 12))
     f_propulsion = 1.0
-    D_rot = 0.01
+    D_rot = 0.001
     kT = 0.0
 
     num_steps = 100000
@@ -52,5 +52,6 @@ function run!()
     #save!(trajectories, traj_filename)
 
     visualize!(trajectories)
+    #save_movie!(trajectories, 30, "TEST_OUTPUTS/test_animation.mp4")
 end
 run!()
