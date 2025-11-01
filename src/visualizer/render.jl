@@ -40,7 +40,7 @@ function visualize!(trajectories::Trajectories)
         object = lift(time_slider.value) do t
             Circle(positions[p][t], 0.5f0)
         end
-        poly!(scene_axis, object, color = (:blue, 0.75), strokecolor = :black)
+        poly!(scene_axis, object, color = (:blue, 0.5), strokecolor = :black, strokewidth = 1.5)
     end
 
     wait(display(window))

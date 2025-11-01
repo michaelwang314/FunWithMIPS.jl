@@ -40,7 +40,7 @@ function run!()
     end
 
     cell_list, padding = CellList(particles, 2 * σ, box)
-    cell_list.update_interval = maximum(1, floor(Int64, 0.90 * padding / (f_propulsion * dt)))
+    cell_list.update_interval = maximum([1, floor(Int64, 0.90 * padding / (f_propulsion * dt))])
     println("CellList update interaval set to $(cell_list.update_interval)")
     lj = HarmonicRepulsion(k, 2 * σ, cell_list, box)
 
@@ -49,7 +49,7 @@ function run!()
     system = System(particles, [lj], [cell_list], brownian)
     trajectories = Trajectories(save_every, box)
     run_simulation!(system, trajectories, num_steps)
-    save!(trajectories, traj_filename)
+    #save!(trajectories, traj_filename)
 
     visualize!(trajectories)
 end
