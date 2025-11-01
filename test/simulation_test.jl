@@ -21,6 +21,7 @@ end=#
 
 function run!()
     traj_filename = "TEST_OUTPUTS/trajectories.out"
+    animation_filename = "TEST_OUTPUTS/animation.mp4"
 
     initial_positions, box = initialize_triangular_lattice(1.5, (20, 12))
     f_propulsion = 1.0
@@ -28,7 +29,8 @@ function run!()
     kT = 0.0
 
     num_steps = 100000
-    save_every = 100
+    save_interval = 10
+    save_start = num_steps - save_interval * 300
     dt = 0.01
 
     k = 10.0
@@ -47,11 +49,11 @@ function run!()
     brownian = BrownianDynamics(particles, dt, kT, box)
 
     system = System(particles, [lj], [cell_list], brownian)
-    trajectories = Trajectories(save_every, box)
+    trajectories = Trajectories(save_interval, box; start = save_start)
     run_simulation!(system, trajectories, num_steps)
     #save!(trajectories, traj_filename)
 
-    visualize!(trajectories)
-    #save_movie!(trajectories, 30, "TEST_OUTPUTS/test_animation.mp4")
+    #visualize!(trajectories)
+    save_movie!(trajectories, 30, animation_filename)
 end
 run!()

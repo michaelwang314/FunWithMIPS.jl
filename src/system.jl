@@ -30,7 +30,7 @@ function run_simulation!(system::System, trajectories::Union{Trajectories, Nothi
             update_neighbor_list!(neighbor_list)
         end
 
-        if !isnothing(trajectories) && (step - trajectories.start) % trajectories.period == 0
+        if !isnothing(trajectories) && step >= trajectories.start && (step - trajectories.start) % trajectories.period == 0
             push!(trajectories.history, deepcopy(system.particles))
         end
 
