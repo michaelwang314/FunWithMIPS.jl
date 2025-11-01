@@ -20,7 +20,7 @@ function CellList(particles::Vector{Particle}, approx_cell_size::Float64, box::V
     next_index = -ones(Int64, length(particles))
     
     for (n, particle) in enumerate(particles)
-        i, j = floor.(Int64, mod.(particle.position, box) ./ cell_sizes) .+ 1
+        i, j = floor.(Int64, particle.position ./ cell_sizes) .+ 1
 
         if start_index[i, j] > 0
             next_index[n] = start_index[i, j]
@@ -35,9 +35,9 @@ function update_neighbor_list!(cell_list::CellList)
     if (cell_list.update_counter += 1) == cell_list.update_interval
         fill!(cell_list.start_index, -1)
 
-        for (n, particle) in enumerate(cell_list.particles)
-            i = floor(Int64, mod(particle.position[1], cell_list.box[1]) / cell_list.cell_sizes[1]) + 1
-            j = floor(Int64, mod(particle.position[2], cell_list.box[2]) / cell_list.cell_sizes[2]) + 1
+        @inbounds for (n, particle) in enumerate(cell_list.particles)
+            i = floor(Int64, particle.position[1] / cell_list.cell_sizes[1]) + 1
+            j = floor(Int64, particle.position[2] / cell_list.cell_sizes[2]) + 1
 
             if cell_list.start_index[i, j] > 0
                 cell_list.next_index[n] = cell_list.start_index[i, j]

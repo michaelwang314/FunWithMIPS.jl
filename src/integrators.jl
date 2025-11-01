@@ -10,7 +10,7 @@ struct BrownianDynamics <: Integrator
 end
 
 function update_particles!(integrator::BrownianDynamics)
-    Threads.@threads for particle in integrator.particles
+    @inbounds Threads.@threads for particle in integrator.particles
         fa_x, fa_y = get_and_update_active_force(particle.propulsion, integrator.dt)
 
         dt_scaled = integrator.dt / particle.γ_trans
@@ -30,7 +30,7 @@ function update_particles!(integrator::BrownianDynamics)
     end
 end
 
-function get_and_update_active_force(propulsion::ActiveBrownian, dt::Float64)
+@inline function get_and_update_active_force(propulsion::ActiveBrownian, dt::Float64)
     fx, fy = propulsion.force
     
     δθ = sqrt(2 * propulsion.D_rot * dt) * randn()
@@ -42,7 +42,7 @@ function get_and_update_active_force(propulsion::ActiveBrownian, dt::Float64)
     return fx, fy
 end
 
-function get_and_update_active_force(propulsion::RunAndTumble, dt::Float64)
+@inline function get_and_update_active_force(propulsion::RunAndTumble, dt::Float64)
     fx, fy = propulsion.force
 
     propulsion.τ_run -= dt
@@ -58,7 +58,7 @@ function get_and_update_active_force(propulsion::RunAndTumble, dt::Float64)
     return fx, fy
 end
 
-function get_and_update_active_force(propulsion::OrnsteinUhlenbeck, dt::Float64)
+@inline function get_and_update_active_force(propulsion::OrnsteinUhlenbeck, dt::Float64)
     # to be implemented
 end
 
