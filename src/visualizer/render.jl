@@ -67,12 +67,12 @@ function save_movie!(trajectory::TrajectoryContainer, framerate::Int64, filename
     limits!(scene_axis, 0, trajectory.box[1], 0, trajectory.box[2])
 
     for p = 1 : num_particles
-        poly!(scene_axis, @lift(Circle(positions[p][$time], 0.5f0)), color = (:blue, 0.5), strokecolor = :black, strokewidth = 1.5)
+        poly!(scene_axis, @lift(Circle(positions[p][$time], 0.5f0)), color = (:blue, 0.5), strokecolor = :black, strokewidth = 1.25)
     end
 
     println("Saving movie to $(filename)")
     record(window, filename, 1 : 1 : max_time; framerate = framerate) do t
         time[] = t
-        println("$(t)/$(max_time) done")
+        println("Frame $(t)/$(max_time) done")
     end
 end
