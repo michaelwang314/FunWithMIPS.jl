@@ -8,7 +8,7 @@ module FunWithMIPS
     export CellList, update_neighbor_list!
     export Interaction, LennardJones, HarmonicRepulsion, compute_forces!, correct_for_periodicity
     export Integrator, BrownianDynamics, update_particles!, get_and_update_active_force
-    export System, Trajectories, initialize_triangular_lattice, run_simulation!, save!, load
+    export System, TrajectoryContainer, initialize_triangular_lattice, run_simulation!, save!, load
     export visualize!, save_movie!
 
     """

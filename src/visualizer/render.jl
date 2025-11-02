@@ -1,10 +1,10 @@
-function visualize!(trajectories::Trajectories)
-    max_time = length(trajectories.history)
-    num_particles = length(trajectories.history[1])
+function visualize!(trajectory::TrajectoryContainer)
+    max_time = length(trajectory.history)
+    num_particles = length(trajectory.history[1])
 
-    positions = [[Point2f(particle.position)] for particle in trajectories.history[1]]
+    positions = [[Point2f(particle.position)] for particle in trajectory.history[1]]
     for t = 2 : max_time
-        for (p, particle) in enumerate(trajectories.history[t])
+        for (p, particle) in enumerate(trajectory.history[t])
             push!(positions[p], Point2f(particle.position))
         end
     end
@@ -12,9 +12,9 @@ function visualize!(trajectories::Trajectories)
     time = Observable{Int64}(1)
 
     window = Figure(size = (800, 600))
-    scene_axis = Axis(window[2, 1], aspect = trajectories.box[1] / trajectories.box[2], title = @lift("t = $($time)"))
+    scene_axis = Axis(window[2, 1], aspect = trajectory.box[1] / trajectory.box[2], title = @lift("t = $($time)"))
     hidedecorations!(scene_axis)
-    limits!(scene_axis, 0, trajectories.box[1], 0, trajectories.box[2])
+    limits!(scene_axis, 0, trajectory.box[1], 0, trajectory.box[2])
 
     controls_grid = GridLayout(window[1, 1], tell_width = false)
     time_slider = Slider(controls_grid[1, 1], range = 1 : 1 : max_time, startvalue = 1, update_while_dragging = true)
@@ -48,13 +48,13 @@ function visualize!(trajectories::Trajectories)
     wait(display(window))
 end
 
-function save_movie!(trajectories::Trajectories, framerate::Int64, filename::String)
-    max_time = length(trajectories.history)
-    num_particles = length(trajectories.history[1])
+function save_movie!(trajectory::TrajectoryContainer, framerate::Int64, filename::String)
+    max_time = length(trajectory.history)
+    num_particles = length(trajectory.history[1])
 
-    positions = [[Point2f(particle.position)] for particle in trajectories.history[1]]
+    positions = [[Point2f(particle.position)] for particle in trajectory.history[1]]
     for t = 2 : max_time
-        for (p, particle) in enumerate(trajectories.history[t])
+        for (p, particle) in enumerate(trajectory.history[t])
             push!(positions[p], Point2f(particle.position))
         end
     end
@@ -62,9 +62,9 @@ function save_movie!(trajectories::Trajectories, framerate::Int64, filename::Str
     time = Observable{Int64}(1)
 
     window = Figure(size = (800, 600))
-    scene_axis = Axis(window[1, 1], aspect = trajectories.box[1] / trajectories.box[2], title = @lift("t = $($time)"))
+    scene_axis = Axis(window[1, 1], aspect = trajectory.box[1] / trajectory.box[2], title = @lift("t = $($time)"))
     hidedecorations!(scene_axis)
-    limits!(scene_axis, 0, trajectories.box[1], 0, trajectories.box[2])
+    limits!(scene_axis, 0, trajectory.box[1], 0, trajectory.box[2])
 
     for p = 1 : num_particles
         poly!(scene_axis, @lift(Circle(positions[p][$time], 0.5f0)), color = (:blue, 0.5), strokecolor = :black, strokewidth = 1.5)

@@ -5,7 +5,7 @@ struct System
     integrator::Integrator
 end
 
-mutable struct Trajectories
+mutable struct TrajectoryContainer
     history::Vector{Vector{Particle}}
 
     start::Int64
@@ -13,9 +13,9 @@ mutable struct Trajectories
 
     box::SVector{2, Float64}
 end
-Trajectories(period::Int64, box::Vector{Float64}; start::Int64 = 1) = Trajectories(Vector{Vector{Particle}}(), start, period, box)
+TrajectoryContainer(period::Int64, box::Vector{Float64}; start::Int64 = 1) = TrajectoryContainer(Vector{Vector{Particle}}(), start, period, box)
 
-function run_simulation!(system::System, trajectories::Union{Trajectories, Nothing}, num_steps::Int64; message_interval::Union{Float64, Nothing} = 10.0)
+function run_simulation!(system::System, trajectory_containers::Vector{TrajectoryContainer}, num_steps::Int64; message_interval::Union{Float64, Nothing} = 10.0)
     prev_step = 0
     time_elapsed = 0.0
     interval_start = time()
@@ -30,8 +30,10 @@ function run_simulation!(system::System, trajectories::Union{Trajectories, Nothi
             update_neighbor_list!(neighbor_list)
         end
 
-        if !isnothing(trajectories) && step >= trajectories.start && (step - trajectories.start) % trajectories.period == 0
-            push!(trajectories.history, deepcopy(system.particles))
+        for trajectory_container in trajectory_containers
+            if step >= trajectory_container.start && (step - trajectory_container.start) % trajectory_container.period == 0
+                push!(trajectory_container.history, deepcopy(system.particles))
+            end
         end
 
         interval_time = time() - interval_start
@@ -48,7 +50,7 @@ function run_simulation!(system::System, trajectories::Union{Trajectories, Nothi
     end
     println("Average steps/s: ", round(num_steps / time_elapsed, digits = 1))
 end
-run_simulation!(system::System, num_steps::Int64; message_interval::Union{Float64, Nothing} = 10.0) = run_simulation!(system, save_to, num_steps; message_interval = message_interval)
+run_simulation!(system::System, num_steps::Int64; message_interval::Union{Float64, Nothing} = 10.0) = run_simulation!(system, Vector{TrajectoryContainer}(), num_steps; message_interval = message_interval)
 
 function initialize_triangular_lattice(lattice_spacing::Float64, dims::Tuple{Int64, Int64})
     Nx, Ny = dims
@@ -73,13 +75,13 @@ end
                   seconds < 10 ? ":0" : ":", seconds)
 end
 
-function save!(trajectories::Trajectories, filename::String)
+function save!(object, filename::String)
     if !isdir(dirname(filename))
         mkpath(dirname(filename))
     end
 
     open(filename, "w") do io
-        serialize(io, trajectories)
+        serialize(io, object)
     end
     println("$(filename) saved!")
 end
