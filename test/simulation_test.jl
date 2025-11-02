@@ -25,18 +25,21 @@ function run!()
     #   - φ: packing fraction
     #   - f_propulsion: propulsion force (γ * f_propulsion is the propulsion speed)
     #   - D_rot: rotational diffusion constant (if using Active Brownian Particles)
+    #       - α and τ are for Run-and-Tumble and Ornstein-Uhlenbeck
     #   - kT: temperature
     #   - num_steps: number of steps to run the simulation for
     #   - dt: timestep
     radius = 0.5
 
     φ = 0.6
-    L = 50.0
+    L = 120.0
     f_propulsion = 0.5
     D_rot = 0.001
+    #α = 0.001
+    #τ = 1000.0    
     kT = 0.0
 
-    num_steps = 100000
+    num_steps = 1000000
     dt = 0.01
 
     # information needed for saving simulation
@@ -61,6 +64,8 @@ function run!()
     particles = Vector{Particle}()
     for position in initial_positions
         push!(particles, Particle(position, ActiveBrownian(f_propulsion, D_rot)))
+        #push!(particles, Particle(position, RunAndTumble(f_propulsion, α)))
+        #push!(particles, Particle(position, OrnsteinUhlenbeck(f_propulsion, τ)))
     end
     println("Number of particles: $(length(particles))")
     println("Packing fraction: $(φ)")
