@@ -36,8 +36,9 @@ function update_neighbor_list!(cell_list::CellList)
         fill!(cell_list.start_index, -1)
 
         @inbounds for n = 1 : length(cell_list.particles)
-            i = floor(Int64, cell_list.particles[n].position[1] / cell_list.cell_sizes[1]) + 1
-            j = floor(Int64, cell_list.particles[n].position[2] / cell_list.cell_sizes[2]) + 1
+            x, y = cell_list.particles[n].position
+            i = floor(Int64, x / cell_list.cell_sizes[1]) + 1
+            j = floor(Int64, y / cell_list.cell_sizes[2]) + 1
 
             if cell_list.start_index[i, j] > 0
                 cell_list.next_index[n] = cell_list.start_index[i, j]
