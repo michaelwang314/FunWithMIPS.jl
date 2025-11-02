@@ -18,12 +18,12 @@ struct HarmonicRepulsion <: Interaction
 end
 
 function compute_forces!(lj::LennardJones)
-    Threads.@threads for particle in lj.neighbor_list.particles
+    @inbounds Threads.@threads for particle in lj.neighbor_list.particles
         x, y = particle.position
         i = floor(Int64, x / lj.neighbor_list.cell_sizes[1])
         j = floor(Int64, y / lj.neighbor_list.cell_sizes[2])
 
-        @inbounds for Δi = -1 : 1, Δj = -1 : 1
+        for Δi = -1 : 1, Δj = -1 : 1
             iΔi = mod(i + Δi, lj.neighbor_list.cell_counts[1]) + 1
             jΔj = mod(j + Δj, lj.neighbor_list.cell_counts[2]) + 1
 
@@ -47,12 +47,12 @@ function compute_forces!(lj::LennardJones)
 end
 
 function compute_forces!(hr::HarmonicRepulsion)
-    Threads.@threads for particle in hr.neighbor_list.particles
+    @inbounds Threads.@threads for particle in hr.neighbor_list.particles
         x, y = particle.position
         i = floor(Int64, x / hr.neighbor_list.cell_sizes[1])
         j = floor(Int64, y / hr.neighbor_list.cell_sizes[2])
 
-        @inbounds for Δi = -1 : 1, Δj = -1 : 1
+        for Δi = -1 : 1, Δj = -1 : 1
             iΔi = mod(i + Δi, hr.neighbor_list.cell_counts[1]) + 1
             jΔj = mod(j + Δj, hr.neighbor_list.cell_counts[2]) + 1
 
