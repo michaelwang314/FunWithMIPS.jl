@@ -25,18 +25,18 @@ function run!()
 
     radius = 0.5
 
-    phi = 0.5
+    phi = 0.6
     lattice_spacing = sqrt(2 * pi * radius^2 / (sqrt(3) * phi))
-    Nx = 50
+    Nx = 100
     initial_positions, box = initialize_triangular_lattice(lattice_spacing, (Nx, trunc(Int64, Nx / sqrt(3))))
-    f_propulsion = 1.0
+    f_propulsion = 0.5
     D_rot = 0.001
     kT = 0.0
 
-    num_steps = 100000
-    save_interval = 25
-    save_start = num_steps - save_interval * 600
+    num_steps = 1000000
     dt = 0.01
+    save_interval = 3000#trunc(Int64, 0.5 / (f_propulsion * dt))
+    save_start = num_steps - save_interval * 300
 
     k = 10.0
 
@@ -46,6 +46,7 @@ function run!()
     end
     println("Number of particles: $(length(particles))")
     println("Packing fraction: $(phi)")
+    println("Box: $(box)")
 
     cell_list, padding = CellList(particles, 2 * radius, box; approx_padding = 0.25)
     cell_list.update_interval = maximum([1, floor(Int64, 0.90 * padding / (f_propulsion * dt))])
@@ -60,6 +61,6 @@ function run!()
     save!(trajectories, traj_filename)
 
     #visualize!(trajectories)
-    #save_movie!(trajectories, 30, animation_filename)
+    save_movie!(trajectories, 30, animation_filename)
 end
 run!()
