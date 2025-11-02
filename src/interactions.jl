@@ -76,10 +76,12 @@ function compute_forces!(hr::HarmonicRepulsion)
 end
 
 @inline function correct_for_periodicity(Δx::Float64, Δy::Float64, box::SVector{2, Float64})
-    if abs(Δx) > 0.5 * box[1]
+    L = 0.5 * box[1]
+    if Δx > L || Δx < -L
         Δx -= sign(Δx) * box[1]
     end
-    if abs(Δy) > 0.5 * box[2]
+    L = 0.5 * box[2]
+    if Δy > L || Δy < -L
         Δy -= sign(Δy) * box[2]
     end
 

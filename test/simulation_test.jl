@@ -33,7 +33,7 @@ function run!()
     D_rot = 0.001
     kT = 0.0
 
-    num_steps = 1000000
+    num_steps = 100000
     save_interval = 25
     save_start = num_steps - save_interval * 600
     dt = 0.01
@@ -59,7 +59,7 @@ function run!()
     run_simulation!(system, trajectories, num_steps)
     save!(trajectories, traj_filename)
 
-    visualize!(trajectories)
+    #visualize!(trajectories)
     #save_movie!(trajectories, 30, animation_filename)
 end
 run!()

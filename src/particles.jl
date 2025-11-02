@@ -15,7 +15,7 @@ end
 mutable struct RunAndTumble <: Propulsion
     force::MVector{2, Float64}
     τ_run::Float64
-    
+
     α::Float64
 end
 function RunAndTumble(strength::Float64, α::Float64)
@@ -27,7 +27,15 @@ function RunAndTumble(strength::Float64, α::Float64)
 end
 
 mutable struct OrnsteinUhlenbeck <: Propulsion
-    # to be implemented
+    force::MVector{2, Float64}
+    
+    strength::Float64
+    τ::Float64
+end
+function OrnsteinUhlenbeck(strength::Float64, τ::Float64)
+    force = strength / sqrt(2) * randn(2)
+
+    return OrnsteinUhlenbeck(force, strength, τ)
 end
 
 struct Particle

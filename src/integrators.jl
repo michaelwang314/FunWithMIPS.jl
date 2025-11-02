@@ -65,6 +65,13 @@ end
 end
 
 @inline function get_and_update_active_force(propulsion::OrnsteinUhlenbeck, dt::Float64)
-    # to be implemented
+    fx, fy = propulsion.force
+
+    dt_scaled = dt / propulsion.τ
+    noise_amp = sqrt(propulsion.strength * dt_scaled)
+    propulsion.force[1] = fx - dt_scaled * fx + noise_amp * randn()
+    propulsion.force[2] = fy - dt_scaled * fy + noise_amp * randn()
+
+    return fx, fy
 end
 
